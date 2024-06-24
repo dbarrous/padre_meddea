@@ -35,7 +35,7 @@ def process_file(data_filename: Path) -> list:
     log.info(f"Processing file {data_filename}.")
     output_files = []
 
-    #  calibrated_file = calibrate_file(data_filename)
+    calibrated_file = calibrate_file(data_filename)
     output_files.append(calibrated_file)
     #  data_plot_files = plot_file(data_filename)
     #  calib_plot_files = plot_file(calibrated_file)
@@ -83,14 +83,18 @@ def calibrate_file(data_filename: Path, output_level=2) -> Path:
 
     if file_metadata["level"] == "l0":
         new_filename = util.create_science_filename(**file_metadata, level="l1") 
+        with open(new_filename, "w"):
+            pass
     
     elif file_metadata["level"] == "l1":
         new_filename = util.create_science_filename(**file_metadata, level="ql")
-    
+        with open(new_filename, "w"):
+            pass
     else:
         log.error(f"Could not calibrate file {data_filename}.")
         raise ValueError(f"Cannot find calibration for file {data_filename}.")
-    return new_filename
+    
+    return Path(new_filename)
 
 
 def get_calibration_file(time: Time) -> Path:
