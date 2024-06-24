@@ -29,7 +29,8 @@ dependencies = [
   'sunpy',
   'roentgen',
   'specutils',
-  'ccsdspy'
+  'ccsdspy',
+  'swxsoc @ git+https://github.com/swxsoc/swxsoc.git'
 ]
 
 [project.optional-dependencies]

@@ -6,6 +6,7 @@ import random
 
 from astropy.time import Time
 
+from swxsoc.util import util
 from padre_meddea import log
 
 __all__ = [
@@ -74,15 +75,22 @@ def calibrate_file(data_filename: Path, output_level=2) -> Path:
         )
     )
 
-    calib_file = get_calibration_file(data_filename)
-    if calib_file is None:
-        raise ValueError("Calibration file for {} not found.".format(data_filename))
+    file_metadata = util.parse_science_filename(data_filename)
+    
+    if file_metadata is None:
+        log.error(f"Could not parse filename {data_filename}.")
+        return None
+
+    if file_metadata["level"] == "l0":
+        new_filename = util.create_science_filename(**file_metadata, level="l1") 
+    
+    elif file_metadata["level"] == "l1":
+        new_filename = util.create_science_filename(**file_metadata, level="ql")
+    
     else:
-        calib_data = read_calibration_file(calib_file)
-
-    # example log messages
-
-    return None
+        log.error(f"Could not calibrate file {data_filename}.")
+        raise ValueError(f"Cannot find calibration for file {data_filename}.")
+    return new_filename
 
 
 def get_calibration_file(time: Time) -> Path:
