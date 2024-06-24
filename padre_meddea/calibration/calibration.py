@@ -82,12 +82,28 @@ def calibrate_file(data_filename: Path, output_level=2) -> Path:
         return None
 
     if file_metadata["level"] == "l0":
-        new_filename = util.create_science_filename(**file_metadata, level="l1") 
+        new_filename = util.create_science_filename(
+            instrument=file_metadata["instrument"],
+            time=file_metadata["time"],
+            version=file_metadata["version"],
+            mode=file_metadata.get("mode", ""),
+            descriptor=file_metadata.get("descriptor", ""),
+            test=file_metadata.get("test", False),
+            level="l1"
+        )
         with open(new_filename, "w"):
             pass
-    
+
     elif file_metadata["level"] == "l1":
-        new_filename = util.create_science_filename(**file_metadata, level="ql")
+        new_filename = util.create_science_filename(
+            instrument=file_metadata["instrument"],
+            time=file_metadata["time"],
+            version=file_metadata["version"],
+            mode=file_metadata.get("mode", ""),
+            descriptor=file_metadata.get("descriptor", ""),
+            test=file_metadata.get("test", False),
+            level="ql"
+        )
         with open(new_filename, "w"):
             pass
     else:
