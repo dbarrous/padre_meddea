@@ -110,7 +110,7 @@ def calibrate_file(data_filename: Path, output_level=2) -> Path:
         log.error(f"Could not calibrate file {data_filename}.")
         raise ValueError(f"Cannot find calibration for file {data_filename}.")
     
-    return Path(new_filename)
+    return new_filename
 
 
 def get_calibration_file(time: Time) -> Path:
