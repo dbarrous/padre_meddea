@@ -93,9 +93,6 @@ def calibrate_file(data_filename: Path, output_level=2) -> Path:
             instrument=file_metadata["instrument"],
             time=file_metadata["time"],
             version=f"0.0.{file_metadata['version']}",
-            mode=file_metadata.get("mode", ""),
-            descriptor=file_metadata.get("descriptor", ""),
-            test=file_metadata.get("test", False),
             level="l1"
         )
         with open(new_filename, "w"):
@@ -106,11 +103,9 @@ def calibrate_file(data_filename: Path, output_level=2) -> Path:
             instrument=file_metadata["instrument"],
             time=file_metadata["time"],
             version=file_metadata["version"],
-            mode=file_metadata.get("mode", ""),
-            descriptor=file_metadata.get("descriptor", ""),
-            test=file_metadata.get("test", False),
             level="ql"
         )
+        
         with open(new_filename, "w"):
             pass
     else:
