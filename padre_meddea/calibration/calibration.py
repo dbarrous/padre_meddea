@@ -78,7 +78,7 @@ def calibrate_file(data_filename: Path, output_level=2) -> Path:
         )
     )
     
-    log.info(f"Calibrating file {data_filename}.")
+    log.info(f"Calibrating file {data_filename.name}.")
 
     file_metadata = util.parse_science_filename(data_filename)
     
