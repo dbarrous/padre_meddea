@@ -30,7 +30,7 @@ dependencies = [
   'roentgen',
   'specutils',
   'ccsdspy',
-  'swxsoc @ git+https://github.com/swxsoc/swxsoc.git'
+  'swxsoc @ git+https://github.com/swxsoc/swxsoc.git@main'
 ]
 
 [project.optional-dependencies]
