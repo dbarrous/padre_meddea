@@ -36,7 +36,10 @@ def process_file(data_filename: Path) -> list:
     output_files = []
 
     calibrated_file = calibrate_file(data_filename)
+    
+    log.info(f"Calibrated file saved as {calibrated_file}.")
     output_files.append(calibrated_file)
+    log.info(f"Output files: {output_files}")
     #  data_plot_files = plot_file(data_filename)
     #  calib_plot_files = plot_file(calibrated_file)
 
@@ -74,8 +77,12 @@ def calibrate_file(data_filename: Path, output_level=2) -> Path:
             num_spikes=random.randint(1, 5)
         )
     )
+    
+    log.info(f"Calibrating file {data_filename}.")
 
     file_metadata = util.parse_science_filename(data_filename)
+    
+    log.info(f"File metadata: {file_metadata}")
     
     if file_metadata is None:
         log.error(f"Could not parse filename {data_filename}.")
@@ -110,6 +117,7 @@ def calibrate_file(data_filename: Path, output_level=2) -> Path:
         log.error(f"Could not calibrate file {data_filename}.")
         raise ValueError(f"Cannot find calibration for file {data_filename}.")
     
+    log.info(f"Calibrated file saved as {new_filename}.")
     return new_filename
 
 
