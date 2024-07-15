@@ -71,7 +71,7 @@ def read_raw_file(filename: Path):
         "photons": parse_ph_packets(filename),
         "housekeeping": parse_hk_packets(filename),
         "spectra": parse_spectrum_packets(filename),
-        "cmd_resp": parse_cmd_response_packets(filename)
+        "cmd_resp": parse_cmd_response_packets(filename),
     }
 
     return result
