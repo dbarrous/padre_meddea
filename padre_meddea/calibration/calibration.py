@@ -9,6 +9,7 @@ from astropy.time import Time
 from astropy.table import Table
 
 import padre_meddea
+
 from padre_meddea import log
 from padre_meddea.io import file_tools
 from padre_meddea.util.util import create_science_filename
@@ -63,6 +64,7 @@ def process_file(filename: Path, overwrite=False) -> list:
             output_files = [output_filename]
 
     #  calibrated_file = calibrate_file(data_filename)
+
     #  data_plot_files = plot_file(data_filename)
     #  calib_plot_files = plot_file(calibrated_file)
 
@@ -75,6 +77,7 @@ def raw_to_l0(filename: Path):
         raise ValueError(f"File {filename} extension not recognized.")
 
     data = file_tools.read_raw_file(filename)
+
 
 
 def get_calibration_file(time: Time) -> Path:
