@@ -25,8 +25,8 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Physics",
 ]
 dependencies = [
-  'astropy>=5.3.3',
-  'sunpy>=5.0.1',
+  'astropy',
+  'sunpy',
   'roentgen',
   'specutils',
   'ccsdspy'
