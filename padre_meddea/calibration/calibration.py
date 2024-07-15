@@ -1,23 +1,28 @@
 """
 A module for all things calibration.
 """
+
 from pathlib import Path
-import random
 
+from astropy.io import fits, ascii
 from astropy.time import Time
+from astropy.table import Table
 
-from swxsoc.util import util
+import padre_meddea
+
 from padre_meddea import log
+from padre_meddea.io import file_tools
+from padre_meddea.util.util import create_science_filename
+from padre_meddea.io.file_tools import read_raw_file
 
 __all__ = [
     "process_file",
-    "calibrate_file",
     "get_calibration_file",
     "read_calibration_file",
 ]
 
 
-def process_file(data_filename: Path) -> list:
+def process_file(filename: Path, overwrite=False) -> list:
     """
     This is the entry point for the pipeline processing.
     It runs all of the various processing steps required.
@@ -32,12 +37,34 @@ def process_file(data_filename: Path) -> list:
     output_filenames: list
         Fully specificied filenames for the output files.
     """
-    log.info(f"Processing file {data_filename}.")
-    output_files = []
+    log.info(f"Processing file {filename}.")
+    if filename.suffix == ".bin":
+        parsed_data = read_raw_file(filename)
+        if "photons" in parsed_data.keys():  # we have event list data
+            ph_list = parsed_data["photons"]
+            hdu = fits.PrimaryHDU(data=None)
+            hdu.header["DATE"] = (Time.now().fits, "FITS file creation date in UTC")
+            fits_meta = read_fits_keyword_file(
+                padre_meddea._data_directory / "fits_keywords_primaryhdu.csv"
+            )
+            for row in fits_meta:
+                hdu.header[row["keyword"]] = (row["value"], row["comment"])
+            bin_hdu = fits.BinTableHDU(data=Table(ph_list))
+            hdul = fits.HDUList([hdu, bin_hdu])
 
-    calibrated_file = calibrate_file(data_filename)
-    
-    output_files.append(calibrated_file)
+            output_filename = create_science_filename(
+                "meddea",
+                ph_list["time"][0].fits,
+                "l0",
+                descriptor="eventlist",
+                test=True,
+                version="0.1.0",
+            )
+            hdul.writeto(output_filename, overwrite=overwrite)
+            output_files = [output_filename]
+
+    #  calibrated_file = calibrate_file(data_filename)
+
     #  data_plot_files = plot_file(data_filename)
     #  calib_plot_files = plot_file(calibrated_file)
 
@@ -45,71 +72,11 @@ def process_file(data_filename: Path) -> list:
     return output_files
 
 
-def calibrate_file(data_filename: Path, output_level=2) -> Path:
-    """
-    Given an input file, calibrate it and return a new file.
+def raw_to_l0(filename: Path):
+    if not (filename.suffix == "bin"):
+        raise ValueError(f"File {filename} extension not recognized.")
 
-    Parameters
-    ----------
-    data_filename: str
-        Fully specificied filename of the non-calibrated file (data level < 2)
-    output_level: int
-        The requested data level of the output file.
-
-    Returns
-    -------
-    output_filename: str
-        Fully specificied filename of the non-calibrated file (data level < 2)
-
-    Examples
-    --------
-    """
-
-    log.info(
-        "Despiking removing {num_spikes} spikes".format(
-            num_spikes=random.randint(0, 10)
-        )
-    )
-    log.warning(
-        "Despiking could not remove {num_spikes}".format(
-            num_spikes=random.randint(1, 5)
-        )
-    )
-    
-    file_metadata = util.parse_science_filename(data_filename)
-    
-    # Temporary directory
-    tmp_dir = Path("/tmp")
-    
-    if file_metadata is None:
-        log.error(f"Could not parse filename {data_filename}.")
-        return None
-
-    if file_metadata["level"] == "l0":
-        new_filename = tmp_dir / util.create_science_filename(
-            instrument=file_metadata["instrument"],
-            time=file_metadata["time"],
-            version=f"0.0.{file_metadata['version']}",
-            level="l1"
-        )
-        with open(new_filename, "w"):
-            pass
-
-    elif file_metadata["level"] == "l1":
-        new_filename = tmp_dir / util.create_science_filename(
-            instrument=file_metadata["instrument"],
-            time=file_metadata["time"],
-            version=file_metadata["version"],
-            level="ql"
-        )
-        
-        with open(new_filename, "w"):
-            pass
-    else:
-        log.error(f"Could not calibrate file {data_filename}.")
-        raise ValueError(f"Cannot find calibration for file {data_filename}.")
-    
-    return new_filename
+    data = file_tools.read_raw_file(filename)
 
 
 def get_calibration_file(time: Time) -> Path:
@@ -154,3 +121,12 @@ def read_calibration_file(calib_filename: Path):
     # if can't read the file
 
     return None
+
+
+def read_fits_keyword_file(csv_file: Path):
+    """Read csv file with default fits metadata information."""
+    fits_meta_table = ascii.read(
+        padre_meddea._data_directory / "fits_keywords_primaryhdu.csv",
+        format="csv",
+    )
+    return fits_meta_table
