@@ -79,7 +79,6 @@ def raw_to_l0(filename: Path):
     data = file_tools.read_raw_file(filename)
 
 
-
 def get_calibration_file(time: Time) -> Path:
     """
     Given a time, return the appropriate calibration file.
