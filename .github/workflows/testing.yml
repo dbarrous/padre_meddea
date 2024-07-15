@@ -31,10 +31,11 @@ jobs:
         #
     - name: Install dependencies
       run: |
+        echo "Installing dependencies $ASTROPY_USE_SYSTEM_ALL"
         python -m pip install --upgrade pip
         python -m pip install -e '.[test]'
       env: 
-        ASTROPY_USE_SYSTEM_EXPAT: 1
+        ASTROPY_USE_SYSTEM_ALL: 1
 
     - name: Run tests
       run: pytest --pyargs padre_meddea --cov padre_meddea
