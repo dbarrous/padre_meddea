@@ -11,6 +11,7 @@ except ImportError:
 
 # Set up the mission environmental variables
 os.environ["SWXSOC_MISSION"] = "padre"
+os.environ["LAMBDA_ENVIRONMENT"] = "PRODUCTION"
 
 from swxsoc import config as swxsoc_config, log as swxsoc_log, print_config
 
