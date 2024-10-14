@@ -10,8 +10,8 @@ except ImportError:
     version_tuple = (0, 0, "unknown version")
 
 # Get SWXSOC_MISSIONS environment variable if it exists or use default for mission
-SWXSOC_MISSION = os.getenv("SWXSOC_MISSION", "padre")  # noqa: E403
-os.environ["SWXSOC_MISSION"] = SWXSOC_MISSION  # noqa: E403
+SWXSOC_MISSION = os.getenv("SWXSOC_MISSION", "padre")  # noqa: E402
+os.environ["SWXSOC_MISSION"] = SWXSOC_MISSION  # noqa: E402
 
 from swxsoc import config as swxsoc_config, log as swxsoc_log, print_config
 
