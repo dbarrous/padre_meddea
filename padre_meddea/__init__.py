@@ -9,9 +9,9 @@ except ImportError:
     __version__ = "unknown version"
     version_tuple = (0, 0, "unknown version")
 
-# Set up the mission environmental variables
-os.environ["SWXSOC_MISSION"] = "padre"
-os.environ["LAMBDA_ENVIRONMENT"] = "PRODUCTION"
+# Get SWXSOC_MISSIONS environment variable if it exists or use default for mission
+SWXSOC_MISSION = os.getenv("SWXSOC_MISSION", "padre")  # noqa: E403
+os.environ["SWXSOC_MISSION"] = SWXSOC_MISSION  # noqa: E403
 
 from swxsoc import config as swxsoc_config, log as swxsoc_log, print_config
 
