@@ -1,4 +1,5 @@
 # see license/LICENSE.rst
+import os
 from pathlib import Path
 
 try:
@@ -7,6 +8,9 @@ try:
 except ImportError:
     __version__ = "unknown version"
     version_tuple = (0, 0, "unknown version")
+
+# Set up the mission environmental variables
+os.environ["SWXSOC_MISSION"] = "padre"
 
 from swxsoc import config as swxsoc_config, log as swxsoc_log, print_config
 
