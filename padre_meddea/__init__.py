@@ -2,6 +2,8 @@
 import os
 from pathlib import Path
 
+from astropy.time import Time
+
 try:
     from ._version import version as __version__
     from ._version import version_tuple
@@ -21,6 +23,15 @@ from swxsoc import (  # noqa: E402
 
 # Load user configuration
 config = swxsoc_config
+# config["mission"]["mission_name"] = "padre"
+# config["mission"]["file_extension"] = ".fits"
+# config["mission"]["inst_names"] = ["meddea", "sharp"]
+# config["mission"]["inst_fullnames"] = [
+#     "Measuring Directivity to Determine Electron Anisotropy",
+#     "sharp",
+# ]
+# config["mission"]["inst_to_shortname"] = {"meddea": "meddea", "sharp": "sharp"}
+
 
 log = swxsoc_log
 
@@ -30,9 +41,6 @@ __all__ = ["config", "print_config"]
 _package_directory = Path(__file__).parent
 _data_directory = _package_directory / "data"
 _test_files_directory = _package_directory / "data" / "test"
-
-MISSION_NAME = "PADRE"
-INSTRUMENT_NAME = "MeDDEA"
 
 # the ratio of detector area for large pixels versus small pixels
 RATIO_TOTAL_LARGE_TO_SMALL_PIX = 0.947
@@ -62,5 +70,14 @@ peaking_time = [
     10.06,
     10.73,
 ]
+
+APID = {
+    "spectrum": 0xA2,  # decimal 162
+    "photon": 0xA0,  # decimal 160
+    "housekeeping": 0xA3,  # decimal 163
+    "cmd_resp": 0x99,  # decimal 153
+}
+
+EPOCH = Time("2000-01-01 00:00", scale="utc")
 
 log.debug(f"padre_meddea version: {__version__}")
